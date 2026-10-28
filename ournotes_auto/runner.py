@@ -456,6 +456,10 @@ class Runner:
         late = st.late_count(4.0)
         if st.aborted or late > max(3, 0.01 * len(st.lateness_ms)):
             why = f"本局执行不稳定（{late} 批迟到超过 4ms）"
+        elif st.held:
+            why = f"本局暂停发送，丢弃 {st.held} 个事件"
+        elif outcome.stalls:
+            why = f"本局截图卡住 {len(outcome.stalls)} 次，FAST/SLOW 可能受卡顿影响"
         elif total and missed > 0.1 * total:
             why = f"GOOD/BAD/MISS 共 {missed} 个（总 {total}），可能同步到了错误的音符"
         else:

@@ -74,6 +74,27 @@ def test_executor_skips_stale_moves():
     assert [r[1] for r in backend.log] == ["down", "up"]
 
 
+@pytest.mark.parametrize("stop_on_wait", [1, 2])
+def test_stop_during_final_wait_does_not_send_batch(monkeypatch, stop_on_wait):
+    from ournotes_auto.player import executor
+
+    stop = threading.Event()
+    waits = []
+
+    def wait(deadline, spin_s):
+        waits.append(deadline)
+        if len(waits) == stop_on_wait:
+            stop.set()
+
+    monkeypatch.setattr(executor, "sleep_until", wait)
+    backend = FakeBackend()
+    events = [TouchEvent(0, Action.DOWN, 0, 1, 1), TouchEvent(10, Action.UP, 0, 1, 1)]
+    stats = Executor(backend).run(events, now(), stop=stop)
+    assert stats.aborted and backend.released
+    assert [r[1] for r in backend.log] == ([] if stop_on_wait == 1 else ["down"])
+    assert stats.sent == stop_on_wait - 1
+
+
 def test_executor_sends_down_before_up_in_batch():
     # 滑动 A（触点 0）结束的同一时刻滑动 B（触点 1）开始：先按下 B 再抬起 A；
     # 同一触点在这一刻抬起又按下（触点 2）保持先抬起

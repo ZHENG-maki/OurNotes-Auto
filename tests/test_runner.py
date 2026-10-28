@@ -189,6 +189,25 @@ def test_runner_records_stalls(tmp_path):
     runner, _, store = make(tmp_path, stalls=[(141071.4, 141691.2)])
     runner.run()
     assert store.history()[0].stalls == [[141071, 141691]]
+    assert store.learned_offset_ms == 0.0
+    assert store.chart_offsets() == {}
+
+
+def test_held_execution_skips_autotune(tmp_path):
+    runner, _, store = make(tmp_path)
+    runner.cfg.loop.max_plays = 1
+    play = runner.session.play
+
+    def held_play(*args, **kwargs):
+        outcome = play(*args, **kwargs)
+        outcome.stats.held = 3
+        return outcome
+
+    runner.session.play = held_play
+    runner.run()
+    assert len(store.history()) == 1
+    assert store.learned_offset_ms == 0.0
+    assert store.chart_offsets() == {}
 
 
 def test_runner_stops_after_consecutive_failures(tmp_path):
