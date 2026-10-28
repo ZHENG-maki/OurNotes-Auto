@@ -640,7 +640,7 @@ def test_interface_tasks_match_agent():
         agent_task = param["custom_action_param"]["task"]
         # 日志里的任务名 = 界面上显示的中文名；name 是界面保存任务列表用的，改名时不动（「打开统计窗口」原名「记录汇总」）
         assert TASKS[agent_task] == zh[task["label"].removeprefix("$")], task["name"]
-        worker_args(agent_task, {**defaults, "account": "user_1"}, {})  # 切换账号的账号名没有默认值
+        worker_args(agent_task, {**defaults, "account": "user_1", "manual_song": "100008"}, {})  # 账号和手选歌曲须填写
         seen.add(agent_task)
     assert seen == set(TASKS)
 

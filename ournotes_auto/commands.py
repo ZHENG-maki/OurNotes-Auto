@@ -84,6 +84,42 @@ def cmd_play(cfg: Config, args) -> int:
     return 0
 
 
+def cmd_auto_play(cfg: Config, args) -> int:
+    """手动指定曲目，准备谱面后等待游戏开始，仅演奏一局。"""
+    import math
+    from dataclasses import replace
+
+    from .player.session import PlaySession, SyncFailed
+    from .records import RecordStore
+
+    if not math.isfinite(args.timeout) or args.timeout <= 0:
+        raise SetupError("等待时长必须为有限正数")
+    chart = _chart(cfg, args.song, args.difficulty)
+    store = RecordStore()
+    learned = store.learned_offset_ms
+    if cfg.autotune.enabled and cfg.autotune.per_chart:
+        learned += store.chart_offset_ms(chart.music_id, chart.difficulty, cfg.game.note_speed)
+    if args.record:
+        cfg.play.sync.record_frames = max(cfg.play.sync.record_frames, 600)
+    # 此入口严格按谱面打完：不加载暂停模板，不启用演奏中截图/OCR。
+    cfg = replace(cfg, play=replace(cfg.play, guard_lost_s=0.0, guard_life_zero_s=0.0))
+    try:
+        with _device(cfg) as (source, touch):
+            session = PlaySession(cfg, source, touch, learned_offset_ms=learned)
+            outcome = session.play_when_started(chart, args.stop, args.timeout)
+    except InterruptedError:
+        logger.info("自动演出已停止")
+        return 130
+    except (TimeoutError, SyncFailed, ValueError) as e:
+        logger.error("自动演出未完成：%s", e)
+        return 1
+    if outcome.stats.aborted or args.stop.is_set():
+        logger.info("自动演出已停止")
+        return 130
+    logger.info("自动演出完成：%s，发送 %d 个事件", chart.key, outcome.stats.sent)
+    return 0
+
+
 def cmd_calibrate_motion(cfg: Config, args) -> int:
     """跟踪首音符全程，测量音符逼近的时间常数 τ 与运动消失线。"""
     from .calibrate import measure_motion
@@ -571,6 +607,13 @@ def register(sub) -> None:
     sp.add_argument("--force", action="store_true", help="同步不可信时也继续演奏")
     sp.add_argument("--watch-combo", action="store_true", help=WATCH_COMBO_HELP)
     sp.set_defaults(func=cmd_play)
+
+    sp = sub.add_parser("auto-play", help="手动指定曲目，等待游戏开始后自动演奏一局")
+    sp.add_argument("song", help="曲目 ID 或曲名（必须与游戏实际曲目一致）")
+    sp.add_argument("-d", "--difficulty", choices=("easy", "normal", "hard", "expert"))
+    sp.add_argument("--timeout", type=float, default=600.0, help="等待游戏开始的时长，默认 600 秒")
+    sp.add_argument("--record", action="store_true", help="保存首音符同步调试截图")
+    sp.set_defaults(func=cmd_auto_play)
 
     cal = sub.add_parser("calibrate", help="校准").add_subparsers(dest="calibrate_cmd", required=True)
     sp = cal.add_parser("motion", help="测量音符运动参数（修改游戏流速后需要重新测量）")

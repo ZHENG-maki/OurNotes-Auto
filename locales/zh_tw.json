@@ -177,5 +177,14 @@
     "task.Records": "開啟統計視窗",
     "task.Records.desc": "data/stats.md",
     "task.NotifyTest": "推播測試",
-    "task.NotifyTest.desc": "依設定裡的「推播到手機」發一則測試訊息，看看設定對不對"
+    "task.NotifyTest.desc": "依設定裡的「推播到手機」發一則測試訊息，看看設定對不對",
+    "task.AutoPlay": "自動演出",
+    "task.AutoPlay.desc": "手動指定實際歌曲和難度，啟動任務後等待遊戲開始，自動同步並演奏一局。請在首個音符出現前啟動；請自行在遊戲內選曲並開始。",
+    "opt.ManualSong": "歌曲",
+    "opt.ManualSong.song": "曲名或歌曲 ID",
+    "opt.ManualSong.msg": "請填寫實際歌曲名稱或 ID",
+    "opt.ManualDifficulty": "難度",
+    "opt.ManualWait": "等待遊戲開始",
+    "opt.ManualWait.seconds": "等待秒數（1–3600）",
+    "opt.ManualWait.msg": "請輸入 1–3600 的整數"
 }

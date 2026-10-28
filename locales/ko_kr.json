@@ -177,5 +177,14 @@
     "task.Records": "통계 창 열기",
     "task.Records.desc": "data/stats.md",
     "task.NotifyTest": "알림 테스트",
-    "task.NotifyTest.desc": "설정의 「휴대폰 알림」으로 테스트 메시지를 하나 보내 설정이 맞는지 확인합니다"
+    "task.NotifyTest.desc": "설정의 「휴대폰 알림」으로 테스트 메시지를 하나 보내 설정이 맞는지 확인합니다",
+    "task.AutoPlay": "자동 연주",
+    "task.AutoPlay.desc": "실제 곡과 난이도를 지정하면 게임 시작을 기다린 뒤 한 곡을 연주합니다. 첫 노트 전에 실행하고 게임 내 선곡 및 시작은 직접 해 주세요.",
+    "opt.ManualSong": "곡",
+    "opt.ManualSong.song": "곡명 또는 곡 ID",
+    "opt.ManualSong.msg": "실제 곡명 또는 ID를 입력하세요",
+    "opt.ManualDifficulty": "난이도",
+    "opt.ManualWait": "게임 시작 대기",
+    "opt.ManualWait.seconds": "대기 시간(초, 1–3600)",
+    "opt.ManualWait.msg": "1–3600 사이의 정수를 입력하세요"
 }
