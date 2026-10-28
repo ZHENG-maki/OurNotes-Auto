@@ -137,25 +137,1045 @@
     ],
     "option": {
         "ManualSong": {
-            "type": "input",
+            "type": "select",
             "label": "$opt.ManualSong",
-            "inputs": [
+            "cases": [
                 {
-                    "name": "song",
-                    "label": "$opt.ManualSong.song",
-                    "default": "",
-                    "pipeline_type": "string",
-                    "verify": "\\S",
-                    "pattern_msg": "$opt.ManualSong.msg"
-                }
-            ],
-            "pipeline_override": {
-                "OurNotesParam": {
-                    "attach": {
-                        "manual_song": "{song}"
+                    "name": "unselected",
+                    "label": "$opt.ManualSong.choose",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": ""
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100001",
+                    "label": "$song.manual.100001",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100001"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100002",
+                    "label": "$song.manual.100002",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100002"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100003",
+                    "label": "$song.manual.100003",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100003"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100004",
+                    "label": "$song.manual.100004",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100004"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100005",
+                    "label": "$song.manual.100005",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100005"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100006",
+                    "label": "$song.manual.100006",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100006"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100007",
+                    "label": "$song.manual.100007",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100007"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100008",
+                    "label": "$song.manual.100008",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100008"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100009",
+                    "label": "$song.manual.100009",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100009"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100010",
+                    "label": "$song.manual.100010",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100010"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100011",
+                    "label": "$song.manual.100011",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100011"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100012",
+                    "label": "$song.manual.100012",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100012"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100013",
+                    "label": "$song.manual.100013",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100013"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100014",
+                    "label": "$song.manual.100014",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100014"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100015",
+                    "label": "$song.manual.100015",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100015"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100016",
+                    "label": "$song.manual.100016",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100016"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100017",
+                    "label": "$song.manual.100017",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100017"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100018",
+                    "label": "$song.manual.100018",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100018"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100019",
+                    "label": "$song.manual.100019",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100019"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100020",
+                    "label": "$song.manual.100020",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100020"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100021",
+                    "label": "$song.manual.100021",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100021"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100026",
+                    "label": "$song.manual.100026",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100026"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100027",
+                    "label": "$song.manual.100027",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100027"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100028",
+                    "label": "$song.manual.100028",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100028"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100029",
+                    "label": "$song.manual.100029",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100029"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100030",
+                    "label": "$song.manual.100030",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100030"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100031",
+                    "label": "$song.manual.100031",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100031"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100032",
+                    "label": "$song.manual.100032",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100032"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100033",
+                    "label": "$song.manual.100033",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100033"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100034",
+                    "label": "$song.manual.100034",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100034"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100035",
+                    "label": "$song.manual.100035",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100035"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100036",
+                    "label": "$song.manual.100036",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100036"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100037",
+                    "label": "$song.manual.100037",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100037"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100038",
+                    "label": "$song.manual.100038",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100038"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100039",
+                    "label": "$song.manual.100039",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100039"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100040",
+                    "label": "$song.manual.100040",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100040"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100041",
+                    "label": "$song.manual.100041",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100041"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100042",
+                    "label": "$song.manual.100042",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100042"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100043",
+                    "label": "$song.manual.100043",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100043"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100044",
+                    "label": "$song.manual.100044",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100044"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100047",
+                    "label": "$song.manual.100047",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100047"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100050",
+                    "label": "$song.manual.100050",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100050"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100051",
+                    "label": "$song.manual.100051",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100051"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100052",
+                    "label": "$song.manual.100052",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100052"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100053",
+                    "label": "$song.manual.100053",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100053"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100054",
+                    "label": "$song.manual.100054",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100054"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100055",
+                    "label": "$song.manual.100055",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100055"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100056",
+                    "label": "$song.manual.100056",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100056"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100057",
+                    "label": "$song.manual.100057",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100057"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100058",
+                    "label": "$song.manual.100058",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100058"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100059",
+                    "label": "$song.manual.100059",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100059"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100060",
+                    "label": "$song.manual.100060",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100060"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100061",
+                    "label": "$song.manual.100061",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100061"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100062",
+                    "label": "$song.manual.100062",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100062"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100063",
+                    "label": "$song.manual.100063",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100063"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100064",
+                    "label": "$song.manual.100064",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100064"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100066",
+                    "label": "$song.manual.100066",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100066"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100069",
+                    "label": "$song.manual.100069",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100069"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100070",
+                    "label": "$song.manual.100070",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100070"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100071",
+                    "label": "$song.manual.100071",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100071"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100072",
+                    "label": "$song.manual.100072",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100072"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100074",
+                    "label": "$song.manual.100074",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100074"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100075",
+                    "label": "$song.manual.100075",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100075"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100076",
+                    "label": "$song.manual.100076",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100076"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100080",
+                    "label": "$song.manual.100080",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100080"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100081",
+                    "label": "$song.manual.100081",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100081"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100082",
+                    "label": "$song.manual.100082",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100082"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100083",
+                    "label": "$song.manual.100083",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100083"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100085",
+                    "label": "$song.manual.100085",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100085"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100087",
+                    "label": "$song.manual.100087",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100087"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100088",
+                    "label": "$song.manual.100088",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100088"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100091",
+                    "label": "$song.manual.100091",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100091"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100092",
+                    "label": "$song.manual.100092",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100092"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100093",
+                    "label": "$song.manual.100093",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100093"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100094",
+                    "label": "$song.manual.100094",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100094"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100095",
+                    "label": "$song.manual.100095",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100095"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100096",
+                    "label": "$song.manual.100096",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100096"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100097",
+                    "label": "$song.manual.100097",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100097"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100098",
+                    "label": "$song.manual.100098",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100098"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100102",
+                    "label": "$song.manual.100102",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100102"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100104",
+                    "label": "$song.manual.100104",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100104"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100105",
+                    "label": "$song.manual.100105",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100105"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100106",
+                    "label": "$song.manual.100106",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100106"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100107",
+                    "label": "$song.manual.100107",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100107"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100108",
+                    "label": "$song.manual.100108",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100108"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100109",
+                    "label": "$song.manual.100109",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100109"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100110",
+                    "label": "$song.manual.100110",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100110"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100111",
+                    "label": "$song.manual.100111",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100111"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100112",
+                    "label": "$song.manual.100112",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100112"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100113",
+                    "label": "$song.manual.100113",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100113"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100114",
+                    "label": "$song.manual.100114",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100114"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100115",
+                    "label": "$song.manual.100115",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100115"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "music_100118",
+                    "label": "$song.manual.100118",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_song": "100118"
+                            }
+                        }
                     }
                 }
-            }
+            ],
+            "default_case": "unselected"
         },
         "ManualDifficulty": {
             "type": "select",
