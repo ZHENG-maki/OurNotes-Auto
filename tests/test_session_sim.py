@@ -97,6 +97,43 @@ def test_session_hits_first_notes_on_time(tau_s):
     assert outcome.stalls == []
 
 
+def test_manual_song_waits_then_plays_without_screenshots(monkeypatch):
+    from ournotes_auto.player import session as session_mod
+
+    notes = [PointNote(i, 3500 + i * 250, NoteKind.TAP, Span(4, 8)) for i in range(2)]
+    chart = Chart(1, "expert", notes=notes)
+    cfg = Config()
+    song_start = now() + 0.5
+    touch = LogTouch()
+
+    class Game(SimGame):
+        playing = False
+
+        def grab(self):
+            assert not self.playing, "No screenshots allowed after synchronization"
+            return super().grab()
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("PlayGuard / ComboWatcher must not start")
+
+    game = Game(chart, song_start)
+    player = PlaySession(cfg, game, touch, combo_reader=forbidden)
+    run = player.executor.run
+
+    def execute(*args, **kwargs):
+        game.playing = True
+        assert args[3] is stop and args[4] is None
+        return run(*args, **kwargs)
+
+    player.executor.run = execute
+    monkeypatch.setattr(session_mod, "PlayGuard", forbidden)
+    monkeypatch.setattr(session_mod, "ComboWatcher", forbidden)
+    stop = threading.Event()
+    outcome = player.play_when_started(chart, stop, timeout_s=10)
+    assert outcome.sync.ok and len(touch.downs) == 2
+    assert all(abs(t - (song_start + n.time_ms / 1000)) < 0.02 for t, n in zip(touch.downs, notes))
+
+
 def test_covered_chart_keeps_touching_next_time(monkeypatch):
     """保底：这首歌演出挡住过暂停按钮（守卫误报过），之后再打这首时看不到也照常触控（#87）。"""
     from ournotes_auto.player import session as session_mod

@@ -194,5 +194,14 @@
     "task.Records": "統計ウィンドウを開く",
     "task.Records.desc": "data/stats.md",
     "task.NotifyTest": "通知テスト",
-    "task.NotifyTest.desc": "設定の「スマホに通知」でテストメッセージを 1 件送り、設定が正しいか確認します"
+    "task.NotifyTest.desc": "設定の「スマホに通知」でテストメッセージを 1 件送り、設定が正しいか確認します",
+    "task.AutoPlay": "自動演奏",
+    "task.AutoPlay.desc": "曲名と難易度を指定し、ゲーム開始を待って1曲演奏します。最初のノーツが出る前に起動し、ゲーム内の選曲と開始は手動で行ってください。",
+    "opt.ManualSong": "楽曲",
+    "opt.ManualSong.song": "曲名または楽曲 ID",
+    "opt.ManualSong.msg": "実際の曲名または ID を入力してください",
+    "opt.ManualDifficulty": "難易度",
+    "opt.ManualWait": "ゲーム開始待機",
+    "opt.ManualWait.seconds": "待機秒数（1–3600）",
+    "opt.ManualWait.msg": "1–3600 の整数を入力してください"
 }

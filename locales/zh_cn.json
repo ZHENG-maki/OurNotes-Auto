@@ -194,5 +194,14 @@
     "task.Records": "打开统计窗口",
     "task.Records.desc": "data/stats.md",
     "task.NotifyTest": "推送测试",
-    "task.NotifyTest.desc": "按设置里的「推送到手机」发一条测试消息，看看设置对不对"
+    "task.NotifyTest.desc": "按设置里的「推送到手机」发一条测试消息，看看设置对不对",
+    "task.AutoPlay": "自动演出",
+    "task.AutoPlay.desc": "手动指定实际歌曲和难度，启动任务后等待游戏开始，自动同步并演奏一局。请在首音符出现前启动；脚本不负责游戏内选曲或开始。",
+    "opt.ManualSong": "歌曲",
+    "opt.ManualSong.song": "曲名或歌曲 ID",
+    "opt.ManualSong.msg": "请填写实际歌曲名称或 ID",
+    "opt.ManualDifficulty": "难度",
+    "opt.ManualWait": "等待游戏开始",
+    "opt.ManualWait.seconds": "等待秒数（1–3600）",
+    "opt.ManualWait.msg": "请输入 1–3600 的整数"
 }

@@ -1,6 +1,20 @@
 {
     "task": [
         {
+            "name": "自动演出",
+            "label": "$task.AutoPlay",
+            "entry": "OurNotes_AutoPlay",
+            "group": [
+                "play"
+            ],
+            "description": "$task.AutoPlay.desc",
+            "option": [
+                "ManualSong",
+                "ManualDifficulty",
+                "ManualWait"
+            ]
+        },
+        {
             "name": "重复刷歌",
             "label": "$task.Repeat",
             "entry": "OurNotes_Repeat",
@@ -122,6 +136,99 @@
         }
     ],
     "option": {
+        "ManualSong": {
+            "type": "input",
+            "label": "$opt.ManualSong",
+            "inputs": [
+                {
+                    "name": "song",
+                    "label": "$opt.ManualSong.song",
+                    "default": "",
+                    "pipeline_type": "string",
+                    "verify": "\\S",
+                    "pattern_msg": "$opt.ManualSong.msg"
+                }
+            ],
+            "pipeline_override": {
+                "OurNotesParam": {
+                    "attach": {
+                        "manual_song": "{song}"
+                    }
+                }
+            }
+        },
+        "ManualDifficulty": {
+            "type": "select",
+            "label": "$opt.ManualDifficulty",
+            "cases": [
+                {
+                    "name": "expert",
+                    "label": "EXPERT",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_difficulty": "expert"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "hard",
+                    "label": "HARD",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_difficulty": "hard"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "normal",
+                    "label": "NORMAL",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_difficulty": "normal"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "easy",
+                    "label": "EASY",
+                    "pipeline_override": {
+                        "OurNotesParam": {
+                            "attach": {
+                                "manual_difficulty": "easy"
+                            }
+                        }
+                    }
+                }
+            ],
+            "default_case": "expert"
+        },
+        "ManualWait": {
+            "type": "input",
+            "label": "$opt.ManualWait",
+            "inputs": [
+                {
+                    "name": "seconds",
+                    "label": "$opt.ManualWait.seconds",
+                    "default": "600",
+                    "pipeline_type": "int",
+                    "verify": "^[1-9]\\d{0,3}$",
+                    "pattern_msg": "$opt.ManualWait.msg"
+                }
+            ],
+            "pipeline_override": {
+                "OurNotesParam": {
+                    "attach": {
+                        "manual_wait_seconds": "{seconds}"
+                    }
+                }
+            }
+        },
         "ChallengeSongMode": {
             "type": "select",
             "label": "$opt.ChallengeSongMode",

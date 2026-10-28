@@ -48,7 +48,10 @@
             "daily_gifts": true,
             "notify_channel": "off",
             "notify_target": "",
-            "notify_events": "all"
+            "notify_events": "all",
+            "manual_song": "",
+            "manual_difficulty": "expert",
+            "manual_wait_seconds": 600
         }
     },
     "OurNotes_Start": {
@@ -179,6 +182,17 @@
                 "custom_action": "OurNotesRun",
                 "custom_action_param": {
                     "task": "notify_test"
+                }
+            }
+        }
+    },
+    "OurNotes_AutoPlay": {
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "OurNotesRun",
+                "custom_action_param": {
+                    "task": "auto_play"
                 }
             }
         }

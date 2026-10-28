@@ -19,6 +19,7 @@ TASKS = {
     "switch_account": "切换账号",
     "daily": "领取日常",
     "repeat": "重复刷歌",
+    "auto_play": "自动演出",
     "clear_lb": "清体力",
     "idle": "挂机",
     "ap": "AP补完",
@@ -408,6 +409,14 @@ def worker_args(task: str, attach: Mapping[str, Any], device: Mapping[str, str])
     elif task == "daily":
         sets = {**device, "device.touch": _choice(attach, "touch", TOUCH_MODES)}
         tail = ["daily", "--jobs", _daily_jobs(attach)]
+    elif task == "auto_play":
+        song = str(_get(attach, "manual_song")).strip()
+        if not song:
+            raise ParamError("自动演出要填写歌曲名称或 ID")
+        diff = _choice(attach, "manual_difficulty", DIFFICULTIES)
+        timeout = _int(attach, "manual_wait_seconds", 1, 3600)
+        sets = {**device, "device.touch": _choice(attach, "touch", TOUCH_MODES), **_humanize(attach)}
+        tail = ["auto-play", song, "--difficulty", diff, "--timeout", str(timeout)]
     else:
         sets = {**device, **run_settings(task, attach)}
         tail = ["run", *(["--watch-combo"] if _bool(attach, "watch_combo") else [])]

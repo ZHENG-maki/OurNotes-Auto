@@ -194,5 +194,14 @@
     "task.Records": "Open Stats Window",
     "task.Records.desc": "data/stats.md",
     "task.NotifyTest": "Test Notification",
-    "task.NotifyTest.desc": "Sends a test message with the \"Push Notifications\" settings to check that they are right"
+    "task.NotifyTest.desc": "Sends a test message with the \"Push Notifications\" settings to check that they are right",
+    "task.AutoPlay": "Auto Play",
+    "task.AutoPlay.desc": "Specify the actual song and difficulty, then wait for gameplay and play once. Start this task before the first note. Select and start the song in the game yourself.",
+    "opt.ManualSong": "Song",
+    "opt.ManualSong.song": "Song name or ID",
+    "opt.ManualSong.msg": "Enter the actual song name or ID",
+    "opt.ManualDifficulty": "Difficulty",
+    "opt.ManualWait": "Wait for gameplay",
+    "opt.ManualWait.seconds": "Seconds (1–3600)",
+    "opt.ManualWait.msg": "Enter an integer from 1 to 3600"
 }

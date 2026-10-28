@@ -6,7 +6,7 @@ import logging
 import threading
 import time
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 import cv2
@@ -157,8 +157,30 @@ class PlaySession:
         with raised_thread_priority():
             return self._play(chart, stop, require_sync_ok, retry)
 
-    def _play(self, chart: Chart, stop: threading.Event | None, require_sync_ok: bool, retry: bool) -> PlayOutcome:
-        plan, tracker = self.prepare(chart, retry)
+    def play_when_started(self, chart: Chart, stop: threading.Event, timeout_s: float = 600.0) -> PlayOutcome:
+        """等待首音符并同步，之后不再截图或检测，按谱面打完一局。"""
+        import math
+
+        if not math.isfinite(timeout_s) or timeout_s <= 0:
+            raise ValueError("等待时长必须为有限正数")
+        plan, tracker = self.prepare(chart)
+        # 手动开始可能等待很久：不使用普通流程的歌曲启动延迟限制。
+        tracker.p = replace(tracker.p, timeout_s=timeout_s)
+        tracker.max_start_delay_s = 0.0
+        logger.info("已准备 %s，等待游戏开始（最多 %g 秒）；请手动在游戏里选同一首歌和难度并开始", chart.key, timeout_s)
+        return self._play(chart, stop, True, False, prepared=(plan, tracker), monitor=False)
+
+    def _play(
+        self,
+        chart: Chart,
+        stop: threading.Event | None,
+        require_sync_ok: bool,
+        retry: bool,
+        *,
+        prepared: tuple[Plan, NoteTracker] | None = None,
+        monitor: bool = True,
+    ) -> PlayOutcome:
+        plan, tracker = self.prepare(chart, retry) if prepared is None else prepared
         self.last_fps = None
         try:
             sync = tracker.wait(self.source, stop)
@@ -178,12 +200,14 @@ class PlaySession:
         lead_ms = (sync.t0 + (plan.first_ms + offset) / 1000 - now()) * 1000
         if lead_ms < 0:
             logger.warning("同步完成时第一个操作已过去 %.0fms，开头音符可能丢失", -lead_ms)
+        if not monitor:
+            logger.info("首音符同步完成，按谱面演奏至结束（演奏中不截图或检测）")
         timed = TimedSource(self.source)
-        watcher = ComboWatcher(timed) if self.combo_reader is not None else None
+        watcher = ComboWatcher(timed) if monitor and self.combo_reader is not None else None
         if watcher is not None:
             watcher.start()
         guard = None
-        if self.guard_template is not None:
+        if monitor and self.guard_template is not None:
             pc = self.cfg.play
             guard = PlayGuard(
                 timed,
