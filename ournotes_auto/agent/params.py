@@ -386,7 +386,7 @@ def worker_args(task: str, attach: Mapping[str, Any], device: Mapping[str, str])
     elif task == "auto_play":
         song = str(_get(attach, "manual_song")).strip()
         if not song:
-            raise ParamError("自动演出要填写歌曲名称或 ID")
+            raise ParamError("请先在自动演出的歌曲列表中选择歌曲")
         diff = _choice(attach, "manual_difficulty", DIFFICULTIES)
         timeout = _int(attach, "manual_wait_seconds", 1, 3600)
         sets = {**device, "device.touch": _choice(attach, "touch", TOUCH_MODES), **_humanize(attach)}
