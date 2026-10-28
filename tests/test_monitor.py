@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from ournotes_auto.charts.model import Chart, NoteKind, PathNode, PointNote, Slide, SlideHead, SlideTail, Span
 from ournotes_auto.player.monitor import (
@@ -22,6 +23,39 @@ def samples_of(values):
 def read(img):
     v = int(img[0])
     return None if v < 0 else v
+
+
+@pytest.mark.parametrize("duration", [0.01, 0.1, 0.65])
+def test_watcher_skips_missed_capture_slots(monkeypatch, duration):
+    from ournotes_auto.player import monitor
+
+    current = [0.0]
+
+    class Source:
+        size = (1280, 720)
+
+        def grab(self):
+            current[0] += duration
+            return np.zeros((720, 1280, 3), np.uint8), current[0]
+
+    class Stop:
+        def __init__(self):
+            self.waits = []
+
+        def is_set(self):
+            return len(self.waits) >= 3
+
+        def wait(self, seconds):
+            self.waits.append(seconds)
+            current[0] += seconds
+
+    monkeypatch.setattr(monitor, "now", lambda: current[0])
+    watcher = monitor.ComboWatcher(Source(), interval_s=0.1)
+    watcher._stop = Stop()
+    watcher._loop()
+    assert len(watcher.samples) == 3
+    assert all(0 < w <= 0.1 + 1e-9 for w in watcher._stop.waits)
+    assert watcher.samples[1][0] - watcher.samples[0][0] >= 0.1 - 1e-9
 
 
 def test_find_breaks_skips_unreadable():

@@ -67,6 +67,10 @@ class ComboWatcher:
                 return
             self.samples.append((t, frame[y0:y1, x0:x1].copy()))
             next_t += self.interval_s
+            # 截图卡住后不补采过去的时刻：旧画面拿不回来，连续截图反而和演奏抢资源。
+            current = now()
+            if next_t <= current:
+                next_t += (int((current - next_t) / self.interval_s) + 1) * self.interval_s
             self._stop.wait(max(0.0, next_t - now()))
 
 

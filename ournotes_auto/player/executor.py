@@ -98,6 +98,10 @@ class Executor:
                         stats.aborted = True
                         break
                     sleep_until(due, self.spin_s)
+                    # stop 也可能在最后一次等待期间到达，发送前再检查，避免多点一批。
+                    if stop is not None and stop.is_set():
+                        stats.aborted = True
+                        break
                     late_ms = (now() - due) * 1000
                     if hold is not None and hold.is_set():
                         if down:
