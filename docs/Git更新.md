@@ -31,3 +31,5 @@ Git 修改版会停用 MFAA 自带的上游界面／资源更新，避免覆盖�
 
 源码来自 [MFAAvalonia](https://github.com/SweetSmellFox/MFAAvalonia/tree/v2.16.2)，按 GPL-3.0 提供；修改源码与构建脚本随本仓库提供。安装时保留 `LICENSE-MFAA`，替换原生 EXE、入口 DLL 与 `libs/MFAAvalonia.Core.dll`，先备份旧文件。
 旧 WinForms 启动器与改名前的 Core EXE 在本次安装的备份目录保留，不再作为启动入口。
+
+原生页面的离屏渲染检查：构建后运行 `dotnet run --project tests/native_ui/NativeUiSmoke.csproj -- <预览输出目录>`。检查读取实际编译后的页面，在浅色、深色、窄窗口三种布局中验证提交绑定并输出 PNG；不向桌面或游戏发送输入。使用自定义构建目录时附加 `-p:NativeUiPublish=<构建输出目录>`。

@@ -3,3 +3,5 @@
 *.jpg binary
 *.npz binary
 *.onnx binary
+# Unified diffs contain a single space on blank context lines.
+*.patch whitespace=-blank-at-eol
