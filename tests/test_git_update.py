@@ -101,3 +101,23 @@ def test_deploy_rollback(tmp_path, monkeypatch):
         update.deploy(tmp_path, tmp_path)
     assert (tmp_path / "a").read_bytes() == b"old"
     assert (tmp_path / "b").read_bytes() == b"old"
+
+
+def test_manual_check_rebases_without_replacing_running_files(repos, tmp_path, monkeypatch, capsys):
+    source, local = repos
+    (source / "remote.txt").write_text("new remote commit")
+    commit(source, "new commit")
+    command(source, "push")
+    root = tmp_path / "installed"
+    root.mkdir()
+    (root / "git-update.json").write_text(json.dumps({"repository": str(local)}))
+    (root / "interface.json").write_bytes(b"currently loaded interface")
+    monkeypatch.setattr(update.sys, "argv", ["git_update.py", "--root", str(root), "--check-only"])
+    monkeypatch.setattr(update, "deploy", lambda *_: pytest.fail("manual check must not deploy"))
+    assert update.main() == 0
+    assert (local / "remote.txt").read_text() == "new remote commit"
+    assert (root / "interface.json").read_bytes() == b"currently loaded interface"
+    assert not (root / "cache/git-update/installed.json").exists()
+    output = capsys.readouterr().out
+    assert "重新打开程序后应用更新" in output
+    assert "COMMIT\t" in output

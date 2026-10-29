@@ -14,4 +14,6 @@
 
 界面程序与本项目的 Agent 是分开的程序，通过 MaaFramework 的 Agent 协议通信。
 
+ZHENG-maki 的 Git 更新修改版基于上述 MFAAvalonia v2.16.2，在原生侧栏加入「Git更新」页并在启动时调用 Python 更新后端。界面修改源码位于 `tools/native-ui/`，固定源码版本与可复现构建脚本见 `tools/build_native_ui.py`；原组件及其修改按 GPL-3.0 分发，保留 `LICENSE-MFAA`。
+
 MaaFramework 动态库未经修改。按 LGPL-3.0 的要求，可以把它替换成自己编译的同版本库：MFAA 包在 `runtimes/win-x64/native/`，MXU 包在 `maafw/`，Agent 用的在 `python/Lib/site-packages/maa/bin/`。

@@ -1,0 +1,63 @@
+--- a/MFAAvalonia.Desktop/Program.cs
++++ b/MFAAvalonia.Desktop/Program.cs
+@@ -60,6 +60,10 @@
+             if (!AppRuntime.IsNewInstance)
+                 _ = AppRuntime.TryRecoverUnresponsiveInstance();
+ 
++            // Apply Git changes before interface/config initialization; retain the native window.
++            if (GitUpdateService.Enabled)
++                GitUpdateService.RunAsync(deploy: true).GetAwaiter().GetResult();
++
+             CheckSkiaAvailability();
+ 
+             if (IsRunningInTemp())
+--- a/MFAAvalonia/Views/Mobile/RootViewContent.axaml
++++ b/MFAAvalonia/Views/Mobile/RootViewContent.axaml
+@@ -68,6 +68,13 @@
+                                                                IconVariant=Regular}"
+                                                IsVisible="False"
+                                                PageContent="{extensions:ServiceProvider ServiceType={x:Type pages:ResourcesView}}" />
++                        <suki:SukiSideMenuItem IsContentMovable="False" Header="Git更新"
++                                               IsVisible="{x:Static helper:GitUpdateService.Enabled}"
++                                               Icon="{fluent:FluentIcon Icon=ArrowSync, IconVariant=Regular}">
++                            <suki:SukiSideMenuItem.PageContent>
++                                <pages:GitUpdateView />
++                            </suki:SukiSideMenuItem.PageContent>
++                        </suki:SukiSideMenuItem>
+                     </suki:SukiSideMenu.Items>
+ 
+                     <suki:SukiSideMenu.HeaderContent>
+--- a/MFAAvalonia/Helper/VersionChecker.cs
++++ b/MFAAvalonia/Helper/VersionChecker.cs
+@@ -359,6 +359,7 @@
+ 
+     public static async Task CheckAsync(bool isStartup = false)
+     {
++        if (GitUpdateService.Enabled) return;
+         await CheckExecutionLock.WaitAsync();
+         try
+         {
+@@ -517,6 +518,11 @@
+         bool notifyWhenUpToDate = true,
+         bool notifyOnError = true)
+     {
++        if (GitUpdateService.Enabled)
++        {
++            ToastHelper.Warn("请使用侧栏「Git更新」检查此修改版的更新");
++            return;
++        }
+         Instances.RootViewModel.SetUpdating(true);
+         var url = MaaProcessor.Interface?.Github ?? MaaProcessor.Interface?.Url ?? string.Empty;
+ 
+@@ -614,6 +620,11 @@
+ 
+     public static async Task CheckForMFAUpdatesAsync(bool isGithub = true)
+     {
++        if (GitUpdateService.Enabled)
++        {
++            ToastHelper.Warn("请使用侧栏「Git更新」检查此修改版的更新");
++            return;
++        }
+         try
+         {
+             Instances.RootViewModel.SetUpdating(true);

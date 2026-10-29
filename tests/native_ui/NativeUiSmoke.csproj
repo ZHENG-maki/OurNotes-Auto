@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <NativeUiPublish Condition="'$(NativeUiPublish)' == ''">$(MSBuildThisFileDirectory)../../cache/native-ui/publish</NativeUiPublish>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Headless" Version="11.3.12" />
+    <PackageReference Include="Avalonia.Skia" Version="11.3.12" />
+    <PackageReference Include="SkiaSharp" Version="3.119.1" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="3.119.1" />
+    <Reference Include="$(NativeUiPublish)/libs/*.dll" Exclude="$(NativeUiPublish)/libs/lib*.dll;$(NativeUiPublish)/libs/d3d*.dll;$(NativeUiPublish)/libs/av_lib*.dll" />
+  </ItemGroup>
+</Project>

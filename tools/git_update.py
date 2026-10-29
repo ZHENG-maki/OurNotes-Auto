@@ -1,4 +1,4 @@
-"""启动器的 Git 更新后端：fetch + rebase，验证本地文件后部署，输出提交记录。"""
+"""原生 Git 更新页后端：fetch + rebase，验证本地文件后部署，输出提交记录。"""
 from __future__ import annotations
 
 import argparse
@@ -143,6 +143,7 @@ def deploy(repo: Path, root: Path) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--check-only", action="store_true", help="仅同步 Git；下次启动再部署")
     args = parser.parse_args()
     root = args.root.resolve()
     config = json.loads((root / "git-update.json").read_text(encoding="utf-8"))
@@ -154,8 +155,12 @@ def main() -> int:
         if not lock.acquire():
             raise UpdateError("另一个更新正在进行")
         if any(is_locked(path) for path in (root / BUSY_DIR).glob("*.lock")):
-            raise UpdateError("演奏任务正在运行，请结束任务并关闭演出窗口后再更新")
+            raise UpdateError("演奏任务正在运行，请结束任务后再更新")
         sync(repo)
+        if args.check_only:
+            print("STATUS\t源码已同步 · main · " + git(repo, "rev-parse", "--short", "HEAD")
+                  + " · 重新打开程序后应用更新", flush=True)
+            return 0
         deploy(repo, root)
         print("STATUS\t更新成功 · main · " + git(repo, "rev-parse", "--short", "HEAD"), flush=True)
         return 0
