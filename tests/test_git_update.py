@@ -110,7 +110,7 @@ def test_manual_check_rebases_without_replacing_running_files(repos, tmp_path, m
     command(source, "push")
     root = tmp_path / "installed"
     root.mkdir()
-    (root / "git-update.json").write_text(json.dumps({"repository": str(local)}))
+    (root / "git-update.json").write_text(json.dumps({"repository": str(local), "upstream_url": None}))
     (root / "interface.json").write_bytes(b"currently loaded interface")
     monkeypatch.setattr(update.sys, "argv", ["git_update.py", "--root", str(root), "--check-only"])
     monkeypatch.setattr(update, "deploy", lambda *_: pytest.fail("manual check must not deploy"))
@@ -121,3 +121,91 @@ def test_manual_check_rebases_without_replacing_running_files(repos, tmp_path, m
     output = capsys.readouterr().out
     assert "重新打开程序后应用更新" in output
     assert "COMMIT\t" in output
+
+
+@pytest.fixture
+def fork_repos(repos, tmp_path):
+    fork, local = repos
+    upstream = tmp_path / "upstream.git"
+    author = tmp_path / "author"
+    command(tmp_path, "clone", "--bare", str(fork), str(upstream))
+    command(upstream, "branch", "-m", "main", "master")
+    command(upstream, "symbolic-ref", "HEAD", "refs/heads/master")
+    command(tmp_path, "clone", str(upstream), str(author))
+    command(author, "config", "user.name", "Upstream Author")
+    command(author, "config", "user.email", "upstream@example.com")
+    return fork, local, author, str(upstream)
+
+
+def test_upstream_and_fork_updates_preserve_customizations_without_repeat_rebases(fork_repos):
+    fork, local, author, url = fork_repos
+    (local / "manual-player.txt").write_text("my custom player")
+    commit(local, "custom player")
+    (author / "arena.txt").write_text("upstream feature")
+    commit(author, "upstream release")
+    command(author, "push")
+    update.sync(local, upstream_url=url)
+    assert update.ancestor(local, command(author, "rev-parse", "HEAD"), "HEAD")
+    first_head = command(local, "rev-parse", "HEAD")
+    update.sync(local, upstream_url=url)
+    assert command(local, "rev-parse", "HEAD") == first_head
+
+    # A fork update must still arrive after local main was rebased onto upstream.
+    (fork / "git-ui.txt").write_text("new Git page fix")
+    commit(fork, "fork fix")
+    command(fork, "push")
+    update.sync(local, upstream_url=url)
+    assert (local / "git-ui.txt").read_text() == "new Git page fix"
+    assert (local / "arena.txt").read_text() == "upstream feature"
+    assert (local / "manual-player.txt").read_text() == "my custom player"
+    assert update.ancestor(local, command(author, "rev-parse", "HEAD"), "HEAD")
+    second_head = command(local, "rev-parse", "HEAD")
+    update.sync(local, upstream_url=url)
+    assert command(local, "rev-parse", "HEAD") == second_head
+
+    (author / "arena.txt").write_text("next upstream release")
+    commit(author, "next upstream release")
+    command(author, "push")
+    update.sync(local, upstream_url=url)
+    assert (local / "arena.txt").read_text() == "next upstream release"
+    assert (local / "manual-player.txt").read_text() == "my custom player"
+    assert update.ancestor(local, command(author, "rev-parse", "HEAD"), "HEAD")
+
+
+def test_upstream_conflict_rolls_back_already_integrated_fork_update(fork_repos):
+    fork, local, author, url = fork_repos
+    (local / "one.txt").write_text("my player changes")
+    commit(local, "custom player")
+    before = command(local, "rev-parse", "HEAD")
+    (fork / "fork-fix.txt").write_text("new fork fix")
+    commit(fork, "fork fix")
+    command(fork, "push")
+    (author / "one.txt").write_text("conflicting upstream changes")
+    commit(author, "upstream change")
+    command(author, "push")
+    with pytest.raises(update.UpdateError, match="已撤销"):
+        update.sync(local, upstream_url=url)
+    assert command(local, "rev-parse", "HEAD") == before
+    assert (local / "one.txt").read_text() == "my player changes"
+    assert not (local / "fork-fix.txt").exists()
+    assert not command(local, "status", "--porcelain")
+    assert not update.pending_rebase(local)
+    assert update.ref(local, update.ORIGIN_SEEN) is None
+
+
+def test_remote_default_branch_is_detected_instead_of_assuming_main(fork_repos):
+    _, local, author, url = fork_repos
+    (author / "release.txt").write_text("release on master")
+    commit(author, "release")
+    command(author, "push")
+    update.sync(local, upstream_url=url)
+    assert command(local, "branch", "--show-current") == "main"
+    assert update.ref(local, "refs/remotes/upstream/master") == command(author, "rev-parse", "HEAD")
+
+
+def test_upstream_refusal_keeps_existing_remote_url(fork_repos):
+    _, local, _, url = fork_repos
+    command(local, "remote", "add", "upstream", "https://example.invalid/something-else.git")
+    with pytest.raises(update.UpdateError, match="地址与配置不一致"):
+        update.sync(local, upstream_url=url)
+    assert command(local, "remote", "get-url", "upstream") == "https://example.invalid/something-else.git"

@@ -1,15 +1,18 @@
 # Git 更新（ZHENG-maki 修改版，免费开源）
 
-默认仓库：`ZHENG-maki/OurNotes-Auto`，默认分支：`main`。
+修改版仓库：`ZHENG-maki/OurNotes-Auto`，本地分支：`main`。原作者上游：`ChissaQAQ/OurNotes-Auto`，自动识别它的默认分支（目前是 `master`）。
 
 双击原安装目录里的 `MFAAvalonia.exe`，启动时先检查并应用 Git 更新，再加载界面和任务配置。
 「Git更新」直接集成在原 MFAAvalonia 的侧栏里，与首页、监控、截图并列；使用原生 SukiUI 控件，跟随原来的明暗主题。
 页面显示最新 40 条本地提交（提交号、时间、作者和说明）、最近检查时间，以及可展开的更新详情。
 不再使用 WinForms 外壳、嵌入窗口或额外的「打开演出／关闭演出窗口」按钮。
 
-每次启动执行 `git fetch origin main` 和 `git rebase origin/main`。本地独有的已提交修改会重放在远端提交之后，不自动推送。
+每次启动同时检查两处：先 fetch 你的 fork 的 `origin/main`，再 fetch 原作者上游的默认分支。fork 有新提交时通过 rebase 接入；上游有新提交时，再把修改版提交 rebase 到最新上游之上。
+本地仍在 `main`，保留「自动演出」、选曲下拉框和原生 Git 页等定制提交，不自动推送或覆盖远端 fork。
+更新器在 Git 内部记录已同步的 fork 提交：两边没有新提交时不重复改写历史；fork 后续新增提交也会继续接入。
+因此「已是最新版本」表示已核对 fork 和上游，更新详情会显示上游提交号与提交说明，状态栏会显示项目版本。
 本地存在未提交修改、未结束的合并/rebase 或安装文件被另行修改时停止更新，保留文件并显示原因。
-本次 rebase 发生冲突时自动 abort 回到更新前的本地提交；不会擅自处理原本就存在的冲突。
+本次任一步 rebase 发生冲突时自动 abort，并恢复整次同步开始前的本地提交；不会擅自处理原本就存在的冲突。
 网络失败时仍可使用已安装版本，失败原因显示在 Git 更新页。
 
 手动检查：结束当前任务后，在侧栏「Git更新」点击「检查更新」。此时只 fetch / rebase 同步源码，重新关闭并打开程序后再应用文件。
@@ -21,8 +24,10 @@
 为了保留 fork 的修改，检测到 `git-update.json` 时停用原上游 Release 更新器。
 
 本机 `git-update.json` 的 `repository` 指向开发用 Git 工作区；该文件只保留在本机，不提交 Git。
-更新器不执行 upstream 合并，也不自动更新 .NET、Python 依赖或 MFAA 二进制；涉及运行环境或 C# 页面变更需要重新编译安装。
+上游通过 rebase 接入，不创建 merge 提交。更新器不自动更新 .NET、Python 依赖或 MFAA 二进制；涉及运行环境或 C# 页面变更需要重新编译安装。
 Git 修改版会停用 MFAA 自带的上游界面／资源更新，避免覆盖原生 Git 页。
+
+`git-update.json` 可用 `upstream_url` 指定上游地址，默认是原作者仓库；`upstream_branch` 省略时自动识别远端 HEAD。已有 `upstream` 地址与配置不符时停止并提示，不擅自覆盖远端设置。
 
 ## 重新构建原生界面
 

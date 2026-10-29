@@ -5,13 +5,14 @@ import argparse
 import hashlib
 import json
 import os
-import shutil
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
 
-URL = "https://github.com/ZHENG-maki/OurNotes-Auto.git"
+UPSTREAM_URL = "https://github.com/ChissaQAQ/OurNotes-Auto.git"
+ORIGIN_SEEN = "refs/ournotes-update/origin-main"
+SYNCED_HEAD = "refs/ournotes-update/synced-main"
 PREFIXES = ("agent/", "ournotes_auto/", "tasks/", "locales/", "docs/", "resource/")
 TOP = {"interface.json", "LICENSE", "TERMS_OF_SERVICE.md", "THIRD_PARTY_NOTICES.md", "config.example.yaml", "tools/git_update.py"}
 
@@ -30,7 +31,44 @@ def git(repo: Path, *args: str) -> str:
     return p.stdout.strip()
 
 
-def sync(repo: Path) -> None:
+def ref(repo: Path, name: str) -> str | None:
+    lines = git(repo, "for-each-ref", "--format=%(objectname)", name).splitlines()
+    return lines[0] if lines else None
+
+
+def ancestor(repo: Path, older: str, newer: str) -> bool:
+    return git(repo, "rev-list", "--count", f"{newer}..{older}") == "0"
+
+
+def pending_rebase(repo: Path) -> bool:
+    for state in ("rebase-merge", "rebase-apply"):
+        path = Path(git(repo, "rev-parse", "--git-path", state))
+        if (path if path.is_absolute() else repo / path).exists():
+            return True
+    return False
+
+
+def fetch_upstream(repo: Path, url: str, branch: str | None) -> str:
+    if "upstream" not in git(repo, "remote").splitlines():
+        git(repo, "remote", "add", "upstream", url)
+    elif git(repo, "remote", "get-url", "upstream") != url:
+        raise UpdateError("upstream 地址与配置不一致，已保留原设置，请先核对上游仓库")
+    if not branch:
+        for line in git(repo, "ls-remote", "--symref", "upstream", "HEAD").splitlines():
+            if line.startswith("ref: refs/heads/") and line.endswith("\tHEAD"):
+                branch = line.split("\t")[0].removeprefix("ref: refs/heads/")
+                break
+    if not branch:
+        raise UpdateError("无法确定上游默认分支，请配置 upstream_branch")
+    git(repo, "check-ref-format", f"refs/heads/{branch}")
+    target = f"refs/remotes/upstream/{branch}"
+    print(f"正在检查上游 upstream/{branch}…", flush=True)
+    git(repo, "fetch", "upstream", f"+refs/heads/{branch}:{target}")
+    print("上游提交：" + git(repo, "log", "-1", "--format=%h %s", target), flush=True)
+    return target
+
+
+def sync(repo: Path, *, upstream_url: str | None = None, upstream_branch: str | None = None) -> None:
     if git(repo, "branch", "--show-current") != "main":
         raise UpdateError("本地分支不是 main，请先整理分支；本次不修改代码")
     for state in ("rebase-merge", "rebase-apply", "MERGE_HEAD"):
@@ -40,16 +78,44 @@ def sync(repo: Path) -> None:
     if git(repo, "status", "--porcelain"):
         raise UpdateError("本地有未提交修改，请先提交；已保留所有文件，本次不更新")
     print("正在检查 origin/main…", flush=True)
-    git(repo, "fetch", "origin", "main")
-    print("正在 rebase 到 origin/main…", flush=True)
+    git(repo, "fetch", "origin", "+refs/heads/main:refs/remotes/origin/main")
+    upstream = fetch_upstream(repo, upstream_url, upstream_branch) if upstream_url else None
+    origin = git(repo, "rev-parse", "origin/main")
+    before = git(repo, "rev-parse", "HEAD")
+    previous = ref(repo, SYNCED_HEAD)
+    # After rebasing our patches onto upstream, origin's old hashes need not be
+    # ancestors. Acknowledge the last integrated origin tip to avoid replaying it
+    # on every launch; a new fork commit or a manual reset invalidates this skip.
+    origin_integrated = (ref(repo, ORIGIN_SEEN) == origin and previous is not None
+                         and ancestor(repo, previous, before))
+    git(repo, "update-ref", "refs/ournotes-update/before-sync", before)
     try:
-        git(repo, "rebase", "origin/main")
+        if not ancestor(repo, origin, before) and not origin_integrated:
+            print("正在 rebase 到 origin/main…", flush=True)
+            git(repo, "rebase", "origin/main")
+        if upstream and not ancestor(repo, git(repo, "rev-parse", upstream), git(repo, "rev-parse", "HEAD")):
+            print(f"正在 rebase 到 {upstream.removeprefix('refs/remotes/')}，保留修改版提交…", flush=True)
+            git(repo, "rebase", upstream)
     except UpdateError as error:
         try:
-            git(repo, "rebase", "--abort")
+            if pending_rebase(repo):
+                git(repo, "rebase", "--abort")
+            if git(repo, "rev-parse", "HEAD") != before:
+                git(repo, "reset", "--keep", before)
         except UpdateError as abort_error:
             raise UpdateError(f"rebase 失败且无法撤销，请手动处理：{abort_error}") from error
-        raise UpdateError(f"rebase 冲突，已撤销并保留原本地提交：{error}") from error
+        raise UpdateError(f"rebase 冲突或失败，已撤销并保留原本地提交：{error}") from error
+    git(repo, "update-ref", ORIGIN_SEEN, origin)
+    git(repo, "update-ref", SYNCED_HEAD, git(repo, "rev-parse", "HEAD"))
+    if upstream:
+        print("已包含上游：" + git(repo, "log", "-1", "--format=%h %s", upstream), flush=True)
+
+
+def version(repo: Path) -> str:
+    try:
+        return json.loads((repo / "interface.json").read_text(encoding="utf-8"))["version"]
+    except (OSError, ValueError, KeyError):
+        return "未知版本"
 
 
 def commits(repo: Path) -> list[list[str]]:
@@ -156,13 +222,14 @@ def main() -> int:
             raise UpdateError("另一个更新正在进行")
         if any(is_locked(path) for path in (root / BUSY_DIR).glob("*.lock")):
             raise UpdateError("演奏任务正在运行，请结束任务后再更新")
-        sync(repo)
+        sync(repo, upstream_url=config.get("upstream_url", UPSTREAM_URL),
+             upstream_branch=config.get("upstream_branch"))
         if args.check_only:
-            print("STATUS\t源码已同步 · main · " + git(repo, "rev-parse", "--short", "HEAD")
+            print("STATUS\t源码已同步 · " + version(repo) + " · main · " + git(repo, "rev-parse", "--short", "HEAD")
                   + " · 重新打开程序后应用更新", flush=True)
             return 0
         deploy(repo, root)
-        print("STATUS\t更新成功 · main · " + git(repo, "rev-parse", "--short", "HEAD"), flush=True)
+        print("STATUS\t更新成功 · " + version(repo) + " · main · " + git(repo, "rev-parse", "--short", "HEAD"), flush=True)
         return 0
     except Exception as error:
         print("STATUS\t更新未完成：" + str(error).replace("\n", " "), flush=True)
