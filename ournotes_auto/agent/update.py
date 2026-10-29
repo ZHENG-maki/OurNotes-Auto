@@ -174,6 +174,10 @@ class UpdateCheck:
 
     def start(self, check: bool = True, auto: bool = True) -> None:
         """任务开始时调用：``check`` 为「检查更新」，``auto`` 为「自动更新」（要先开检查更新）。"""
+        if (self.root / "git-update.json").exists():
+            self._auto = False
+            self._set_auto_flag(False)
+            return
         self._auto = check and auto
         self._set_auto_flag(self._auto)
         self._polled_at = -math.inf  # 上一个任务缓存的状态不作数，第一次 hot_ready 重新读
@@ -187,6 +191,8 @@ class UpdateCheck:
 
         界面里的选项要到任务开始才拿得到，所以只看 ``start`` 留下的 auto_off：关掉「检查更新」或「自动更新」时
         都有它，这里就不查，等任务开始再按当时的选项处理。没有它（还没运行过任务）按默认的都开着。"""
+        if (self.root / "git-update.json").exists():
+            return
         local = release.read_release(self.root)
         if local is None or local.get("ui") != "mfaa" or (self.root / AUTO_OFF_FILE).exists():
             return
